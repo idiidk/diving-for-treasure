@@ -1,0 +1,7 @@
+void setupSpelScherm() {
+
+}
+
+void tekenSpelScherm() {
+  
+}
