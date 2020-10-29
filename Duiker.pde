@@ -14,7 +14,7 @@ float duikerZuurstofGebruik = 0.0005; // per frame
 Richting duikerXRichting = Richting.NEUTRAAL;
 Richting duikerYRichting = Richting.NEUTRAAL;
 
-int duikerLevens = 3;
+int duikerLevens = 0;
 int duikerScore = 0;
 int duikerSchatten = 0;
 float duikerZuurstof = 1;
@@ -41,6 +41,10 @@ void tekenDuiker() {
   popMatrix();
 
   tekenZuurstofBalk();
+
+  if(duikerLevens < 0) {
+    actiefScherm = Scherm.EIND;
+  }
 }
 
 void tekenZuurstofBalk() {
@@ -56,29 +60,30 @@ void tekenZuurstofBalk() {
     duikerZuurstof -= duikerZuurstofGebruik;
 
     if(duikerZuurstof < 0) {
-      resetDuiker();
+      resetDuiker(false);
       duikerLevens--;
-
-      if(duikerLevens < 0) {
-        //gameOver();
-      }
     }
   } else {
     duikerZuurstof = 1;
 
     if(duikerSchatten > 0) {
-      duikerScore = duikerSchatten * 50;
+      duikerScore += duikerSchatten * 50;
       duikerSchatten = 0;
     }
   }
 }
 
-void resetDuiker() {
+void resetDuiker(boolean volledig) {
   duikerY = zeeNiveau + golfImages[0].height;
   duikerYRichting = Richting.NEUTRAAL;
   duikerXRichting = Richting.NEUTRAAL;
   duikerZuurstof = 1;
   duikerSchatten = 0;
+
+  if(volledig) {
+    duikerLevens = 3;
+    duikerScore = 0;
+  }
 }
 
 void beweegDuiker() {
@@ -114,13 +119,14 @@ void verwerkDuikerItemAanraking(int gridX, int gridY, int itemId) {
     case 0: //MIJN
       items[gridX][gridY] = -1;
       duikerLevens--;
-      resetDuiker();
+      resetDuiker(false);
       break;
     case 1: //KIST EN MUNT
     case 2:
       if(duikerPakt) {
         duikerSchatten++;
         items[gridX][gridY] = -1;
+        duikerPakt = false;
       }
       break;
   }
@@ -206,33 +212,8 @@ boolean raaktDuikerItemAan(int itemX, int itemY) {
   int itemFixedX = itemX - gridItemGrootte / 2;
   int itemFixedY = itemY - gridItemGrootte / 2;
 
-  boolean aanrakingMogelijk = duikerX < itemFixedX + gridItemGrootte &&
+  return duikerX < itemFixedX + gridItemGrootte &&
          duikerX + duikerImage.width > itemFixedX &&
          duikerY < itemFixedY + gridItemGrootte &&
          duikerY + duikerImage.height > itemFixedY;
-
-  // Per pixel collision detection
-  if(aanrakingMogelijk) {
-    for(int x = 0; x < duikerImage.width; x++) {
-      for(int y = 0; y < duikerImage.height; y++) {
-        color pixel = duikerImage.get(x, y);
-        boolean isTransparent = alpha(pixel) == 0;
-
-        if(isTransparent) continue;
-        int relativeX = int(duikerX + x);
-        int relativeY = int(duikerY + x);
-
-        boolean collision = relativeX > itemFixedX && 
-        relativeY > itemFixedY &&
-        relativeX < itemFixedX + gridItemGrootte && 
-        relativeY < itemFixedY + gridItemGrootte;
-
-        if(collision) {
-          return true;
-        }
-      } 
-    }
-  }
-
-  return false;
 }

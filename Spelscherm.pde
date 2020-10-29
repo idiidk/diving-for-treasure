@@ -10,7 +10,7 @@ void tekenSpelScherm() {
 
   if(zeeNiveau != 100) {
     zeeNiveau = int(lerp(zeeNiveau, 100, 0.03));
-    resetDuiker();
+    resetDuiker(false);
   }
 
   tekenWolken();

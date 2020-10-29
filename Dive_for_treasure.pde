@@ -1,6 +1,7 @@
 enum Scherm {
   START,
-  SPEL
+  SPEL,
+  EIND
 }
 
 Scherm actiefScherm = Scherm.START;
@@ -23,6 +24,9 @@ void draw() {
       break;
     case SPEL:
       tekenSpelScherm();
+      break;
+    case EIND:
+      tekenEindScherm();
       break;
   }
 }
