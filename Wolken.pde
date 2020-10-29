@@ -1,42 +1,51 @@
-PImage[] wolkImages = new PImage[3];
-ArrayList<int[]> wolken = new ArrayList();
+int[][] wolken;
+int[] wolkGebied = new int[4];
 
-void setupWolken() {
-  wolkImages[0] = loadImage("cloud_1.png");
-  wolkImages[1] = loadImage("cloud_2.png");
-  wolkImages[2] = loadImage("cloud_3.png");
+// Versprijd de wolken binnen een specifiek gebied
+void versprijdWolken(int x1, int y1, int x2, int y2, int hoeveelheid) {
+  wolken = new int[hoeveelheid][];
+  wolkGebied[0] = x1;
+  wolkGebied[1] = y1;
+  wolkGebied[2] = x2;
+  wolkGebied[3] = y2;
 
-  wolkImages[0].resize(0, 100);
-  wolkImages[1].resize(0, 50);
-  wolkImages[2].resize(0, 75);
+  for(int i = 0; i < hoeveelheid; i++) {
+    // Random positie binnen regio
+    int wolkX = int(random(x1, x2));
+    int wolkY = int(random(y1, y2));
+    int wolkImageIndex = int(random(0, wolkImages.length));
+
+    // Voeg de wolk toe aan de lijst met wolken
+    int[] wolkData = { wolkX, wolkY, wolkImageIndex, int(random(1, 3)) };
+    wolken[i] = wolkData;
+  }
 }
 
-// Het gebied waar de wolken getekend worden
-void tekenWolken(int x1, int y1, int x2, int y2) {
-  tint(#FFFFFF, 128);
-  if(wolken.size() == 0) {
-    for(int i = 0; i < 10; i++) {
-      int[] wolkData = { round(random(x1, x2)), round(random(y1, y2)), round(random(0, wolkImages.length - 1)) };
-      wolken.add(wolkData);
-    }
-  }
-
-  for(int i = 0; i < wolken.size(); i++) {
-    int[] wolkData = wolken.get(i);
-    int[] wolkPositie = { wolkData[0], wolkData[1] };
+void tekenWolken() {
+  tint(255, 128);
+  // Loop over de verspreide wolken en teken ze
+  for(int i = 0; i < wolken.length; i++) {
+    int[] wolkData = wolken[i];
     PImage wolkImage = wolkImages[wolkData[2]];
 
-    image(wolkImage, wolkPositie[0], wolkPositie[1]);
+    image(wolkImage, wolkData[0], wolkData[1]);
 
-    wolkPositie[0]++;
-    int[] nieuweData = { wolkPositie[0], wolkPositie[1], wolkData[2] };
+    // Beweeg de wolk naar rechts door de x positie te vergroten
+    wolkData[0] += wolkData[3];
 
-    if(wolkPositie[0] > width) {
-      nieuweData[0] = -wolkImage.width - round(random(50));
-      nieuweData[1] = round(random(y1, y2));
-      nieuweData[2] = round(random(0, wolkImages.length - 1));
+    // Als de wolk buiten het scherm valt wordt de x positie gereset
+    // de wolk image veranderd ook om het interessant te houden
+    if(wolkData[0] > width) {
+      // Zet de x naar een random x van 0 tot 50 van het scherm af
+      wolkData[0] = -wolkImage.width - int(random(50));
+      // Zet de y naar een random y in het gebied 
+      wolkData[1] = int(random(wolkGebied[1], wolkGebied[3]));
+      // Verander de wolkImage om het interressant te houden ;)
+      wolkData[2] = int(random(0, wolkImages.length));
     }
-    wolken.set(i, nieuweData);
+
+    // Update de wolk
+    wolken[i] = wolkData;
   }
 }
 

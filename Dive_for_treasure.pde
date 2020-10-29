@@ -6,21 +6,39 @@ enum Scherm {
 Scherm actiefScherm = Scherm.START;
 
 void setup() {
-  size(750, 500);
-  setupUI();
-  setupZee();
-  setupWolken();
+  size(1920, 950);
 
-  setupSpelScherm();
+  PFont font = loadFont("Poppins-Regular-48.vlw");
+	textFont(font);
+
+  setupImages();
+  setupStartScherm();
 }
 
 void draw() {
+  clear();
   switch(actiefScherm) {
     case START:
       tekenStartScherm();
       break;
     case SPEL:
       tekenSpelScherm();
+      break;
+  }
+}
+
+void keyReleased() {
+  switch(actiefScherm) {
+    case SPEL:
+      keyReleasedDuiker();
+      break;
+  }
+}
+
+void keyPressed() {
+  switch(actiefScherm) {
+    case SPEL:
+      keyPressedDuiker();
       break;
   }
 }
