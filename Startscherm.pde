@@ -16,11 +16,11 @@ void tekenTitel() {
 
   fill(#000000, titelOndoorzichtigheid);
   textSize(REM * 3);
-  text("Dive for Treasure", width / 2, UI_GROOTTE * 100);
+  text("Dive for Treasure", width / 2, UI_GROOTTE * 50);
 
   fill(#000000, titelOndoorzichtigheid / 1.5);
   textSize(REM * 1.75);
-  text("door Vincent Brouwer", width / 2, UI_GROOTTE * 150);
+  text("door Vincent Brouwer", width / 2, UI_GROOTTE * 100);
 }
 
 void setupStartScherm() {
@@ -38,18 +38,18 @@ void tekenStartScherm() {
   tekenZee();
   tekenWolken();
 
-  boolean startSpel = tekenKnop("start spel!", int(width * 0.5 - 100), int(height * 0.75), 200, 75, false);
-  int padding = int(width / 6 * UI_GROOTTE);
+  boolean startSpel = tekenKnop("start spel!", width * 0.5 - 100, height * 0.75, 200, 75, false);
+  int padding = int(width / 5 * UI_GROOTTE);
   
   textAlign(TOP, LEFT);
   fill(#000000, 100);
-  text("Aantal mijnen", padding, int(height * 0.25) - 25);
-  uiStaat[0] = tekenWisselschakelaar(mijnOpties, padding, int(height * 0.25), int(width - padding * 2), 50, uiStaat[0]);
+  text("Aantal mijnen", padding, UI_GROOTTE * 200);
+  uiStaat[0] = tekenWisselschakelaar(mijnOpties, padding, UI_GROOTTE * 220, width - padding * 2, 50, uiStaat[0]);
   
   textAlign(TOP, LEFT);
   fill(#000000, 100);
-  text("Aantal schatten", padding, int(height * 0.25) + 100);
-  uiStaat[1] = tekenWisselschakelaar(schatOpties, padding, int(height * 0.25) + 125, int(width - padding * 2), 50, uiStaat[1]);
+  text("Aantal schatten", padding, UI_GROOTTE * 320);
+  uiStaat[1] = tekenWisselschakelaar(schatOpties, padding, UI_GROOTTE * 340, width - padding * 2, 50, uiStaat[1]);
 
   if(mousePressed) {
     if(startSpel) {

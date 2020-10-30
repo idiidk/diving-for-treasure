@@ -7,13 +7,16 @@ enum Scherm {
 Scherm actiefScherm = Scherm.START;
 
 void setup() {
-  size(1920, 950);
+  size(1000, 750);
 
   PFont font = loadFont("Poppins-Regular-48.vlw");
 	textFont(font);
 
   setupImages();
   setupStartScherm();
+
+  surface.setResizable(true);
+  surface.setTitle("Dive for Treasure");
 }
 
 void draw() {

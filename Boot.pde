@@ -1,11 +1,12 @@
 float bootX = 0;
-int bootY = 0;
-int targetBootX = 0;
+float bootY = 0;
+float targetBootX = 0;
+int vaarCount = 0;
 int bootKleur = #FFFFFF;
 
 void tekenBoot() {
   imageMode(CORNER);
-  bootY = int(zeeNiveau - 50 + zeeVariatie * 0.75);
+  bootY = zeeNiveau - 50 + zeeVariatie * 0.75;
 
   // Teken de boot
   tint(bootKleur);
@@ -14,9 +15,13 @@ void tekenBoot() {
   // Beweeg de boot soepel naar de target positie
   // wanneer de boot hier aankomt wordt er een nieuwe 
   // target positie gegenereerd
-  bootX = lerp(bootX, targetBootX, 0.005);
+  float speed = width * 0.000001;
+  bootX = lerp(bootX, targetBootX, speed);
 
-  if(round(targetBootX) == round(bootX)) {
-    targetBootX = int(random(0, width - bootImage.width));
+  if(vaarCount > 100) {
+    targetBootX = random(0, width - bootImage.width);
+    vaarCount = 0;
   }
+
+  vaarCount++;
 }

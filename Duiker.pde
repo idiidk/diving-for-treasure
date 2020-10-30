@@ -8,25 +8,30 @@ enum Richting {
 
 float duikerX = 0;
 float duikerY = 75;
-float duikerSnelheid = 1.25;
-float duikerZuurstofGebruik = 0.0005; // per frame
+float duikerSnelheid = 1.5; // de waarde die aan de x en y positie wordt toegevoegd per frame
+float duikerZuurstofGebruik = 0.00075; // zuurstof gebruik per frame
 
-Richting duikerXRichting = Richting.NEUTRAAL;
-Richting duikerYRichting = Richting.NEUTRAAL;
+Richting duikerXRichting = Richting.NEUTRAAL; // de richting die de duiker op de x as beweegt
+Richting duikerYRichting = Richting.NEUTRAAL; // de richting die de duiker op de y as beweegt
 
-int duikerLevens = 0;
-int duikerScore = 0;
-int duikerSchatten = 0;
-float duikerZuurstof = 1;
+int duikerLevens = 3; // de levens die de duiker heeft
+int duikerScore = 0; // de score die de duiker heeft
+int[] duikerSchatten = new int[0]; // de schatten die de duiker heeft
+float duikerZuurstof = 1; // het zuurstofniveau van de duiker 0.0-1.0
 
-boolean duikerPakt = false;
+boolean duikerPakt = false; // of de duiker een object aan het pakken is
 
 void tekenDuiker() {
   imageMode(CORNER);
   tint(#FFFFFF);
 
+  // verwerk beweging van de duiker
   beweegDuiker();
 
+  // flip de image als de duiker naar links beweegt
+  //
+  // https://forum.processing.org/two/discussion/25757/how-to-flip-an-image-vertically-in-processsing-3-3-6
+  // https://stackoverflow.com/questions/29334348/processing-mirror-image-over-x-axis
   pushMatrix();
   switch(duikerXRichting) {
     case LINKS:
@@ -41,6 +46,9 @@ void tekenDuiker() {
   popMatrix();
 
   tekenZuurstofBalk();
+  if(duikerSchatten.length == 0) {
+    checkLevelCompleet();
+  }
 
   if(duikerLevens < 0) {
     actiefScherm = Scherm.EIND;
@@ -66,19 +74,22 @@ void tekenZuurstofBalk() {
   } else {
     duikerZuurstof = 1;
 
-    if(duikerSchatten > 0) {
-      duikerScore += duikerSchatten * 50;
-      duikerSchatten = 0;
+    if(duikerSchatten.length > 0) {
+      for(int i = 0; i < duikerSchatten.length; i++) {
+        duikerScore += itemScores[duikerSchatten[i]];
+      }
+      duikerSchatten = new int[0];
     }
   }
 }
 
 void resetDuiker(boolean volledig) {
+  duikerX = bootX + bootImage.width / 2;
   duikerY = zeeNiveau + golfImages[0].height;
   duikerYRichting = Richting.NEUTRAAL;
   duikerXRichting = Richting.NEUTRAAL;
+  duikerSchatten = new int[0];
   duikerZuurstof = 1;
-  duikerSchatten = 0;
 
   if(volledig) {
     duikerLevens = 3;
@@ -121,10 +132,17 @@ void verwerkDuikerItemAanraking(int gridX, int gridY, int itemId) {
       duikerLevens--;
       resetDuiker(false);
       break;
-    case 1: //KIST EN MUNT
-    case 2:
+    case 1: //ZUURSTOF
       if(duikerPakt) {
-        duikerSchatten++;
+        duikerZuurstof = 1;
+        items[gridX][gridY] = -1;
+        duikerPakt = false;
+      }
+      break;
+    case 2: //KIST EN MUNT
+    case 3:
+      if(duikerPakt) {
+        duikerSchatten = append(duikerSchatten, itemId);
         items[gridX][gridY] = -1;
         duikerPakt = false;
       }
@@ -170,6 +188,12 @@ void zetDuikerYRichting(Richting richting) {
   }
 }
 
+void checkLevelCompleet() {
+  if(gridEmptyCount == items.length * items[0].length) {
+    actiefScherm = Scherm.EIND;
+  }
+}
+
 void keyReleasedDuiker() {
   switch(keyCode) {
     case LEFT:
@@ -180,6 +204,7 @@ void keyReleasedDuiker() {
     if(duikerXRichting != Richting.RECHTS) return;
       zetDuikerXRichting(Richting.NEUTRAAL);
       break;
+    case ENTER:
     case 32:
       duikerPakt = false;
       break;
@@ -202,15 +227,16 @@ void keyPressedDuiker() {
     case RIGHT:
       zetDuikerXRichting(Richting.RECHTS);
       break;
+    case ENTER:
     case 32:
       duikerPakt = true;
       break;
   }
 }
 
-boolean raaktDuikerItemAan(int itemX, int itemY) {
-  int itemFixedX = itemX - gridItemGrootte / 2;
-  int itemFixedY = itemY - gridItemGrootte / 2;
+boolean raaktDuikerItemAan(float itemX, float itemY) {
+  float itemFixedX = itemX - gridItemGrootte / 2;
+  float itemFixedY = itemY - gridItemGrootte / 2;
 
   return duikerX < itemFixedX + gridItemGrootte &&
          duikerX + duikerImage.width > itemFixedX &&

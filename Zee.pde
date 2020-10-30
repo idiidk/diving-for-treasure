@@ -1,11 +1,11 @@
 float zeeVariatie = 0;
 float zeeRandomVariatie = 10;
-int zeeNiveau = 0;
+float zeeNiveau = 0;
 int zeeKleur = #006994;
 
 // Tekent een instantie van de zee,
 // maakt het mogelijk de zee te tilen als het scherm groter wordt
-void tekenZeeInstantie(int x, int y, float golfAfstand) {
+void tekenZeeInstantie(float x, float y, float golfAfstand) {
   // Geef de golven een kleurtje
   imageMode(CORNER);
   tint(zeeKleur);
@@ -35,7 +35,7 @@ void tekenZee() {
   
   // Teken de instanties van de zee :)
   for(int i = 0; i < keerHerhalen; i++) {
-    int golfX = golfImages[0].width * i;
+    float golfX = golfImages[0].width * i;
     tekenZeeInstantie(golfX, zeeNiveau, zeeVariatie);
   }
 }

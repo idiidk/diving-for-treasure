@@ -1,16 +1,16 @@
 final float UI_GROOTTE = 1;
 final int REM = round(16 * UI_GROOTTE);
 
-boolean muisBovenGebied(int x1, int y1, int x2, int y2) {
+boolean muisBovenGebied(float x1, float y1, float x2, float y2) {
 	boolean muisGroterDan = mouseX > x1 && mouseY > y1;
 	boolean muisKleinerDan = mouseX < x2 && mouseY < y2;
 	
 	return muisGroterDan && muisKleinerDan;
 }
 
-int tekenWisselschakelaar(int[] opties, int x, int y, int breedte, int hoogte, int geselecteerd) {
+int tekenWisselschakelaar(int[] opties, float x, float y, float breedte, float hoogte, int geselecteerd) {
 	int hoverBovenIndex = -1;
-	int knopBreedte = breedte / opties.length;
+	float knopBreedte = breedte / opties.length;
 
 	for(int i = 0; i < opties.length; i++) {
 		if(tekenKnop(str(opties[i]), x + knopBreedte * i, y, knopBreedte, hoogte, geselecteerd == i)) {
@@ -25,7 +25,7 @@ int tekenWisselschakelaar(int[] opties, int x, int y, int breedte, int hoogte, i
 	}
 }
 
-boolean tekenKnop(String text, int x, int y, int breedte, int hoogte, boolean geselecteerd) {
+boolean tekenKnop(String text, float x, float y, float breedte, float hoogte, boolean geselecteerd) {
 	boolean muisBovenKnop = muisBovenGebied(x, y, x + breedte, y + hoogte);
 	
 	if(muisBovenKnop || geselecteerd) {
